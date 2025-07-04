@@ -138,7 +138,7 @@ fi
 
 # Format final output
 if [[ "$DAY_OF_WEEK" == "Unknown day" ]]; then
-    echo "This photo was taken at this address: \"$ADDRESS\" in \"$POSTAL_CODE $CITY\" ($COUNTRY). Data and time are unknown."
+    echo "This photo was taken at this address: $ADDRESS in $POSTAL_CODE $CITY ($COUNTRY). Data and time are unknown."
 else
-    echo "This photo was taken on $DAY_OF_WEEK, $MONTH $DAY, $YEAR at $HOUR:$MINUTE ($TIME_OF_DAY) at this address: \"$ADDRESS\" in \"$POSTAL_CODE $CITY\" ($COUNTRY)."
+    echo "This photo was taken on $DAY_OF_WEEK, $MONTH $DAY, $YEAR at $HOUR:$MINUTE ($TIME_OF_DAY) at this address: $ADDRESS in $POSTAL_CODE $CITY ($COUNTRY)."
 fi
