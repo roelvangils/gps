@@ -30,12 +30,57 @@ fi
 
 # Format date and time
 if [[ "$DATE_TIME" != "null" ]]; then
-    zmodload zsh/datetime
-    # Parse the exif date format 'YYYY:MM:DD HH:MM:SS'
-    strptime -r "%Y:%m:%d %H:%M:%S" "$DATE_TIME" epoch_time
+    # Parse the date and time components using zsh parameter expansion
+    # Format: YYYY:MM:DD HH:MM:SS
+    YEAR=${DATE_TIME:0:4}
+    MONTH_NUM=${DATE_TIME:5:2}
+    DAY=${DATE_TIME:8:2}
+    HOUR=${DATE_TIME:11:2}
+    MINUTE=${DATE_TIME:14:2}
     
-    # Format all date/time parts in one go
-    strftime "%A %B %-d %Y %H %M" "$epoch_time" | read -r DAY_OF_WEEK MONTH DAY YEAR HOUR MINUTE
+    # Remove leading zeros from day
+    DAY=$((10#$DAY))
+    
+    # Convert month number to month name
+    case $MONTH_NUM in
+        01) MONTH="January";;
+        02) MONTH="February";;
+        03) MONTH="March";;
+        04) MONTH="April";;
+        05) MONTH="May";;
+        06) MONTH="June";;
+        07) MONTH="July";;
+        08) MONTH="August";;
+        09) MONTH="September";;
+        10) MONTH="October";;
+        11) MONTH="November";;
+        12) MONTH="December";;
+    esac
+    
+    # Calculate day of week using Zeller's congruence
+    # This is a portable way to get day of week without relying on date command
+    local m=$((10#$MONTH_NUM))
+    local y=$((10#$YEAR))
+    local d=$((10#$DAY))
+    
+    if (( m < 3 )); then
+        m=$((m + 12))
+        y=$((y - 1))
+    fi
+    
+    local c=$((y / 100))
+    local k=$((y % 100))
+    local f=$(( (d + (13*(m+1))/5 + k + k/4 + c/4 - 2*c) % 7 ))
+    
+    case $f in
+        0) DAY_OF_WEEK="Saturday";;
+        1) DAY_OF_WEEK="Sunday";;
+        2) DAY_OF_WEEK="Monday";;
+        3) DAY_OF_WEEK="Tuesday";;
+        4) DAY_OF_WEEK="Wednesday";;
+        5) DAY_OF_WEEK="Thursday";;
+        6) DAY_OF_WEEK="Friday";;
+    esac
     
     # Determine time of day
     if ((HOUR >= 5 && HOUR < 12)); then
