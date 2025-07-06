@@ -1,0 +1,2 @@
+[console_scripts]
+gps-toolkit = gps_toolkit.cli:main
